@@ -35,3 +35,41 @@ body {
     border-radius: 4px;
   }
   
+  /* HEADER BANNER */
+.site-header {
+    background-color: #ffffff;   /* or a brand color */
+    padding: 1rem 2rem;
+    position: fixed;             /* stays at top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+  
+  .site-logo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin: 0;
+    color: #333;                 /* tweak to your brand color */
+  }
+  
+  /* Push the rest of the page down so it’s not hidden under the fixed header */
+  body {
+    margin-top: 4rem;  /* adjust based on header height */
+  }
+
+  /* Center the main-content between header and bottom */
+.main-content {
+    display: flex;
+    flex-direction: column;    /* stack heading, message, form */
+    align-items: center;       /* center horizontally */
+    justify-content: center;   /* center vertically */
+    /* subtract header height (e.g. 4rem) from full viewport height */
+    height: calc(100vh - 4rem);
+    padding-top: 4rem;         /* push down past the fixed header */
+    box-sizing: border-box;
+    text-align: center;        /* center text in child elements */
+  }
+  
