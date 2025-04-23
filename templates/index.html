@@ -1,22 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  …  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Address Autocomplete</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <h1>HomeSure</h1>
-  <p>Share an address and we'll send you a Home Risk Report.</p>
-
-  <!-- Success message -->
+  </body>To get started, share an address below. We'll use this to generate your Home Risk Report.</body>
   {% if success %}
     <p class="success">Successfully submitted!</p>
   {% endif %}
 
   <form action="/" method="post">
-    <input type="text" name="user_text" placeholder="Enter something…" required>
+    <!-- NOTE: id="address" is required by the Google API init code below -->
+    <input
+      type="text"
+      id="address"
+      name="address"
+      placeholder="Start typing your address..."
+      autocomplete="off"
+      required
+    />
     <button type="submit">Save</button>
   </form>
+
+  <!-- 1) Load the Google Maps JS API with your key and the places library -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A&libraries=places&callback=initAutocomplete"
+    async defer
+  ></script>
+
+  <!-- 2) Initialize the autocomplete on our #address input -->
+  <script>
+    function initAutocomplete() {
+      const input = document.getElementById('address');
+      const autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['address'],                     // only address results
+        componentRestrictions: { country: 'us' } // restrict to US
+      });
+      // Optional: when the user selects an address, you can grab the structured data
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        console.log('User selected address:', place.formatted_address);
+        // you could even pull out place.address_components here if you need street/zip separately
+      });
+    }
+  </script>
 </body>
 </html>
-

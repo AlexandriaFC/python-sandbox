@@ -28,15 +28,12 @@ def save_submission(text):
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
-        user_text = request.form["user_text"]
-        save_submission(user_text)
-        # redirect with a flag so we can show the message on the next GET
+        address = request.form["address"]
+        save_submission(address)
         return redirect(url_for("home", success="1"))
 
-    # on GET, check for the flag
-    success = request.args.get("success")
-    return render_template("index.html", success=bool(success))
+    success = bool(request.args.get("success"))
+    return render_template("index.html", success=success)
 
 if __name__ == "__main__":
-    # Run in debug mode on port 5000
     app.run(debug=True)
