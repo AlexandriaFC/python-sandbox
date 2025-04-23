@@ -30,7 +30,7 @@
   <script>
     function initAutocomplete() {
       const input = document.getElementById('address');
-      const autocomplete = new google.maps.places.Autocomplete(input, {
+      const autocomplete = new google.maps.places.PlaceAutocompleteElement(input, {
         types: ['address'],                     // only address results
         componentRestrictions: { country: 'us' } // restrict to US
       });
