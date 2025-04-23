@@ -5,49 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Address Autocomplete</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  <!-- Load the Maps JS API (weekly build for new PlaceAutocompleteElement) -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A&v=weekly"
+    async
+    defer
+  ></script>
+
+  <!-- Initialize the new Places Autocomplete widget -->
+  <script type="module">
+    // Import the PlaceAutocompleteElement class
+    const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
+
+    // Once the API is loaded, attach to the input
+    const input = document.getElementById("address");
+    const autocomplete = new PlaceAutocompleteElement({
+      element: input,                           // attach to this input
+      fields: ["formatted_address"],            // what data you need
+      componentRestrictions: { country: "US" }, // restrict to US
+      filter: ["address"]                       // only addresses
+    });
+
+    // Optional: listen for when the user selects an address
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      console.log("Selected address:", place.formatted_address);
+    });
+  </script>
 </head>
+<h1>HomeSure</h1>
+  <p>To get started, share an address below. We'll use this to generate your Home Risk Report.</p>
+  <style>
+    .success {
+      color: green;
+    }
+  </style>
 <body>
-  <h1>HomeSure</h1>
-  </body>To get started, share an address below. We'll use this to generate your Home Risk Report.</body>
+  <h1>Enter your address</h1>
+
   {% if success %}
     <p class="success">Successfully submitted!</p>
   {% endif %}
 
   <form action="/" method="post">
-    <!-- NOTE: id="address" is required by the Google API init code below -->
     <input
       type="text"
       id="address"
       name="address"
-      placeholder="Start typing your address..."
-      autocomplete="off"
+      placeholder="Start typing your address…"
       required
     />
     <button type="submit">Save</button>
   </form>
-
-    <!-- 2) Initialize the autocomplete on our #address input -->
-  <script>
-    function initAutocomplete() {
-      const input = document.getElementById('address');
-      const autocomplete = new google.maps.places.PlaceAutocompleteElement(input, {
-        types: ['address'],                     // only address results
-        componentRestrictions: { country: 'us' } // restrict to US
-      });
-      // Optional: when the user selects an address, you can grab the structured data
-      autocomplete.addListener('place_changed', () => {
-        const place = autocomplete.getPlace();
-        console.log('User selected address:', place.formatted_address);
-        // you could even pull out place.address_components here if you need street/zip separately
-      });
-    }
-  </script>
-
-  <!-- 1) Load the Google Maps JS API with your key and the places library -->
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A&libraries=places&callback=initAutocomplete"
-    async defer
-  ></script>
-
 </body>
 </html>
+
