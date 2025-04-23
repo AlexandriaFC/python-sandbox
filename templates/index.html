@@ -9,22 +9,15 @@
   <!-- 1) Define the initMap callback BEFORE loading the API -->
   <script>
     async function initMap() {
-      // Load the new Places library
-      const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
-      
-      // Create the autocomplete widget
-      const placeAutocomplete = new PlaceAutocompleteElement();
-      
-      // (Optional) set a placeholder
-      placeAutocomplete.placeholder = "Start typing your address…";
-      // Restrict to US
-      placeAutocomplete.componentRestrictions = { country: "US" };
-      
-      // Insert it into our form container
+      // 2) Import the Places library
+      await google.maps.importLibrary("places");
+      // 3) Create the autocomplete widget
+      const placeAutocomplete = new google.maps.places.PlaceAutocompleteElement();
+      // 4) Insert it into our form
       document.getElementById("autocomplete-container")
               .appendChild(placeAutocomplete);
 
-      // When the user picks a place, fetch and store the formatted address
+      // 5) When the user picks an address, capture it into the hidden field
       placeAutocomplete.addEventListener("gmp-select", async ({ placePrediction }) => {
         const place = placePrediction.toPlace();
         await place.fetchFields({ fields: ["formattedAddress"] });
@@ -33,13 +26,18 @@
     }
   </script>
 
-  <!-- 2) Load the Maps JS API (weekly build) with our callback -->
+  <!-- 2) Load the Maps JS API with Places library and our callback -->
   <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A&v=weekly&callback=initMap"
+    src="https://maps.googleapis.com/maps/api/js?
+         key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A
+         &libraries=places
+         &v=weekly
+         &callback=initMap"
     async
     defer
   ></script>
 </head>
+
 <body>
   <h1>Enter your address</h1>
 
@@ -48,9 +46,9 @@
   {% endif %}
 
   <form action="/" method="post">
-    <!-- Container where the PlaceAutocompleteElement will render itself -->
+    <!-- This div will get the auto-input appended -->
     <div id="autocomplete-container"></div>
-    <!-- Hidden field that actually sends the chosen address to Flask -->
+    <!-- Hidden input actually sent to Flask -->
     <input type="hidden" name="address" id="address-value" />
     <button type="submit">Save</button>
   </form>
