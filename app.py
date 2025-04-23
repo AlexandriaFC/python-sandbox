@@ -30,28 +30,12 @@ def home():
     if request.method == "POST":
         user_text = request.form["user_text"]
         save_submission(user_text)
-        # After saving, redirect back to GET so browser doesn’t re-submit if refreshed
-        return redirect(url_for("home"))
+        # redirect with a flag so we can show the message on the next GET
+        return redirect(url_for("home", success="1"))
 
-    # For GET requests, just render the page
-    return render_template("index.html")
-
-def home():
-    # You can return plain HTML directly:
-    return """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Flask Simple Page</title>
-    </head>
-    <body>
-      <h1>Hello from Flask!</h1>
-      <p>This page is served by a Python web server.</p>
-    </body>
-    </html>
-    """
+    # on GET, check for the flag
+    success = request.args.get("success")
+    return render_template("index.html", success=bool(success))
 
 if __name__ == "__main__":
     # Run in debug mode on port 5000

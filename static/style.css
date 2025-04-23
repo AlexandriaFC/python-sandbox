@@ -26,3 +26,12 @@ body {
     cursor: pointer;
   }
   
+  .success {
+    background-color: #e0ffe0;
+    border: 1px solid #00aa00;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    color: #006600;
+    border-radius: 4px;
+  }
+  
