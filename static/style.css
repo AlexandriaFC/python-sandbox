@@ -68,7 +68,6 @@ body {
     justify-content: center;   /* center vertically */
     /* subtract header height (e.g. 4rem) from full viewport height */
     height: calc(100vh - 4rem);
-    padding-top: 4rem;         /* push down past the fixed header */
     box-sizing: border-box;
     text-align: center;        /* center text in child elements */
   }
