@@ -6,40 +6,40 @@
   <title>Address Autocomplete</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-  <!-- 1) Define the init callback before loading the API -->
+  <!-- 1) Define the initMap callback BEFORE loading the API -->
   <script>
-    window.initAutocomplete = async () => {
-      // Load the new Places library and pull out the widget class
+    async function initMap() {
+      // Load the new Places library
       const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
-      // Create the widget
-      const autocompleteEl = new PlaceAutocompleteElement();
-      autocompleteEl.placeholder = "Start typing your address…";
-      // Restrict to US addresses
-      autocompleteEl.componentRestrictions = { country: "US" };
-      // Put it into our container
+      
+      // Create the autocomplete widget
+      const placeAutocomplete = new PlaceAutocompleteElement();
+      
+      // (Optional) set a placeholder
+      placeAutocomplete.placeholder = "Start typing your address…";
+      // Restrict to US
+      placeAutocomplete.componentRestrictions = { country: "US" };
+      
+      // Insert it into our form container
       document.getElementById("autocomplete-container")
-              .appendChild(autocompleteEl);
+              .appendChild(placeAutocomplete);
 
-      // Grab the hidden input so we can store the selection
-      const hiddenInput = document.getElementById("address-value");
-
-      // When user picks an address, fill the hidden field
-      autocompleteEl.addEventListener("gmp-select", async ({ placePrediction }) => {
+      // When the user picks a place, fetch and store the formatted address
+      placeAutocomplete.addEventListener("gmp-select", async ({ placePrediction }) => {
         const place = placePrediction.toPlace();
-        // Fetch the formatted_address field
         await place.fetchFields({ fields: ["formattedAddress"] });
-        hiddenInput.value = place.formattedAddress;
+        document.getElementById("address-value").value = place.formattedAddress;
       });
-    };
+    }
   </script>
 
-  <!-- 2) Load the Maps API with callback to our init -->
+  <!-- 2) Load the Maps JS API (weekly build) with our callback -->
   <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A&v=weekly&callback=initAutocomplete"
-    async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A&v=weekly&callback=initMap"
+    async
+    defer
   ></script>
 </head>
-
 <body>
   <h1>Enter your address</h1>
 
@@ -48,9 +48,9 @@
   {% endif %}
 
   <form action="/" method="post">
-    <!-- Container for the autocomplete widget -->
+    <!-- Container where the PlaceAutocompleteElement will render itself -->
     <div id="autocomplete-container"></div>
-    <!-- Hidden input to actually submit the chosen address -->
+    <!-- Hidden field that actually sends the chosen address to Flask -->
     <input type="hidden" name="address" id="address-value" />
     <button type="submit">Save</button>
   </form>
