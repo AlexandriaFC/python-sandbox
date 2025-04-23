@@ -6,50 +6,52 @@
   <title>Address Autocomplete</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-  <!-- 1) Declare a global async init function -->
+  <!-- 1) Define the init callback before loading the API -->
   <script>
     window.initAutocomplete = async () => {
-      // Now google.maps is defined, import the places library
+      // Load the new Places library and pull out the widget class
       const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
+      // Create the widget
+      const autocompleteEl = new PlaceAutocompleteElement();
+      autocompleteEl.placeholder = "Start typing your address…";
+      // Restrict to US addresses
+      autocompleteEl.componentRestrictions = { country: "US" };
+      // Put it into our container
+      document.getElementById("autocomplete-container")
+              .appendChild(autocompleteEl);
 
-      const input = document.getElementById("address");
-      const autocomplete = new PlaceAutocompleteElement({
-        element: input,
-        fields: ["formatted_address"],
-        componentRestrictions: { country: "US" },
-        filter: ["address"]
-      });
+      // Grab the hidden input so we can store the selection
+      const hiddenInput = document.getElementById("address-value");
 
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        console.log("Selected address:", place.formatted_address);
+      // When user picks an address, fill the hidden field
+      autocompleteEl.addEventListener("gmp-select", async ({ placePrediction }) => {
+        const place = placePrediction.toPlace();
+        // Fetch the formatted_address field
+        await place.fetchFields({ fields: ["formattedAddress"] });
+        hiddenInput.value = place.formattedAddress;
       });
     };
   </script>
 
-  <!-- 2) Load the Maps JS API with your key and callback -->
+  <!-- 2) Load the Maps API with callback to our init -->
   <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A&v=weekly&callback=initAutocomplete"
-    async
-    defer
+    async defer
   ></script>
 </head>
+
 <body>
-  <h1>HomeSure</h1>
-  <h3>To get started, share an address and we'll generate a Home Risk Report fo you.</h3>
+  <h1>Enter your address</h1>
 
   {% if success %}
     <p class="success">Successfully submitted!</p>
   {% endif %}
 
   <form action="/" method="post">
-    <input
-      type="text"
-      id="address"
-      name="address"
-      placeholder="Start typing your address…"
-      required
-    />
+    <!-- Container for the autocomplete widget -->
+    <div id="autocomplete-container"></div>
+    <!-- Hidden input to actually submit the chosen address -->
+    <input type="hidden" name="address" id="address-value" />
     <button type="submit">Save</button>
   </form>
 </body>
