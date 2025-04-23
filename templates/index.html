@@ -6,43 +6,37 @@
   <title>Address Autocomplete</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-  <!-- Load the Maps JS API (weekly build for new PlaceAutocompleteElement) -->
+  <!-- 1) Declare a global async init function -->
+  <script>
+    window.initAutocomplete = async () => {
+      // Now google.maps is defined, import the places library
+      const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
+
+      const input = document.getElementById("address");
+      const autocomplete = new PlaceAutocompleteElement({
+        element: input,
+        fields: ["formatted_address"],
+        componentRestrictions: { country: "US" },
+        filter: ["address"]
+      });
+
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        console.log("Selected address:", place.formatted_address);
+      });
+    };
+  </script>
+
+  <!-- 2) Load the Maps JS API with your key and callback -->
   <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A&v=weekly"
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&v=weekly&callback=initAutocomplete"
     async
     defer
   ></script>
-
-  <!-- Initialize the new Places Autocomplete widget -->
-  <script type="module">
-    // Import the PlaceAutocompleteElement class
-    const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
-
-    // Once the API is loaded, attach to the input
-    const input = document.getElementById("address");
-    const autocomplete = new PlaceAutocompleteElement({
-      element: input,                           // attach to this input
-      fields: ["formatted_address"],            // what data you need
-      componentRestrictions: { country: "US" }, // restrict to US
-      filter: ["address"]                       // only addresses
-    });
-
-    // Optional: listen for when the user selects an address
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      console.log("Selected address:", place.formatted_address);
-    });
-  </script>
 </head>
-<h1>HomeSure</h1>
-  <p>To get started, share an address below. We'll use this to generate your Home Risk Report.</p>
-  <style>
-    .success {
-      color: green;
-    }
-  </style>
 <body>
-  <h1>Enter your address</h1>
+  <h1>HomeSure</h1>
+  <h3>To get started, share an address and we'll generate a Home Risk Report fo you.</h3>
 
   {% if success %}
     <p class="success">Successfully submitted!</p>
@@ -60,4 +54,3 @@
   </form>
 </body>
 </html>
-
