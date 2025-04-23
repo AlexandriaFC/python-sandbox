@@ -24,6 +24,7 @@ fastjsonschema==2.21.1
 flake8==7.2.0
 Flask==3.1.0
 fqdn==1.5.1
+gunicorn==23.0.0
 h11==0.14.0
 httpcore==1.0.8
 httpx==0.28.1
