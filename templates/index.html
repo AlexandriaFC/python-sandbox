@@ -26,13 +26,7 @@
     <button type="submit">Save</button>
   </form>
 
-  <!-- 1) Load the Google Maps JS API with your key and the places library -->
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A&libraries=places&callback=initAutocomplete"
-    async defer
-  ></script>
-
-  <!-- 2) Initialize the autocomplete on our #address input -->
+    <!-- 2) Initialize the autocomplete on our #address input -->
   <script>
     function initAutocomplete() {
       const input = document.getElementById('address');
@@ -48,5 +42,12 @@
       });
     }
   </script>
+
+  <!-- 1) Load the Google Maps JS API with your key and the places library -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXaaG2c6zzMxbvWwVQ6ccWoJ2-TEvm_8A&libraries=places&callback=initAutocomplete"
+    async defer
+  ></script>
+
 </body>
 </html>
